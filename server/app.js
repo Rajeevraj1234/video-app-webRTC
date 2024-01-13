@@ -1,10 +1,20 @@
-const express  = require("express");
-const app= express();
-const PORT = 8000;
+const { Server } = require("socket.io");
 
-app.get("/",(req,res)=>{
-  console.log("hello there from landing page");
-})
+const io = new Server(8000, {
+  cors: true,
+});
 
+const emailToSocketIdMap = new Map();
+const socketIdtoEmailMap = new Map();
 
-app.listen(PORT,()=>console.log("Listening on port 8000"));
+io.on("connection", (socket) => {
+  console.log("Socket Connected", socket.id);
+  socket.on("join-room", (data) => {
+    const { email, roomId } = data;
+    emailToSocketIdMap.set(email, socket.id);
+    socketIdtoEmailMap.set(socket.id, email);
+    io.to(roomId).emit("user-joined", { email, id:socket.id });
+    socket.join(roomId);
+    io.to(socket.id).emit("join-room", data);
+  });
+});

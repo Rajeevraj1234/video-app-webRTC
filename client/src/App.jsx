@@ -1,13 +1,15 @@
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import LandingPage from "../src/assets/landingPage"
+import Room from "../src/assets/room"
 
 function App() {
-
   return (
-    <>
-      <h1>Hello world</h1>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="room/:roomId" element={<Room />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
